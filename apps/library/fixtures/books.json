@@ -1,0 +1,82 @@
+[
+  {
+    "model": "library.book",
+    "pk": 1,
+    "fields": {
+      "title": "Dom Casmurro",
+      "author": "Machado de Assis",
+      "publication_year": 1899,
+      "is_available": true
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 2,
+    "fields": {
+      "title": "Grande Sertão: Veredas",
+      "author": "Guimarães Rosa",
+      "publication_year": 1956,
+      "is_available": false
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 3,
+    "fields": {
+      "title": "1984",
+      "author": "George Orwell",
+      "publication_year": 1949,
+      "is_available": true
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 4,
+    "fields": {
+      "title": "O Hobbit",
+      "author": "J.R.R. Tolkien",
+      "publication_year": 1937,
+      "is_available": true
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 5,
+    "fields": {
+      "title": "Cem Anos de Solidão",
+      "author": "Gabriel García Márquez",
+      "publication_year": 1967,
+      "is_available": false
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 6,
+    "fields": {
+      "title": "O Pequeno Príncipe",
+      "author": "Antoine de Saint-Exupéry",
+      "publication_year": 1943,
+      "is_available": true
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 7,
+    "fields": {
+      "title": "Sapiens: Uma Breve História da Humanidade",
+      "author": "Yuval Noah Harari",
+      "publication_year": 2011,
+      "is_available": true
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": 8,
+    "fields": {
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "publication_year": 2008,
+      "is_available": false
+    }
+  }
+]
