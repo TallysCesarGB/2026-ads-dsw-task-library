@@ -27,7 +27,7 @@
         {% if books %}
             <ul class="catalog">
                 {% for book in books %}
-                    <li data-entry data-title="{{ book.title }}" data-author="{{ author.name }}">
+                    <li data-entry>
                         <span class="entry-number">{{ forloop.counter }}</span>
                         <div class="entry-body">
                             <p class="entry-title">{{ book.title }}</p>

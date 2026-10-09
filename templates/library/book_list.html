@@ -31,11 +31,24 @@
 
             <ul class="catalog" data-catalog>
                 {% for book in books %}
-                    <li data-entry data-title="{{ book.title }}" data-author="{{ book.author }}">
+                    <li 
+                        data-entry
+                        data-title="{{ book.title }}" 
+                        data-author="{% for a in book.authors.all %}
+                            {{ a.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}"
+                    >
                         <span class="entry-number">{{ forloop.counter }}</span>
                         <div class="entry-body">
                             <p class="entry-title">{{ book.title }}</p>
-                            <p class="entry-meta"><a href="{% url 'library:author-detail' book.author.slug %}"> {{ book.author }} </a>&middot; {{ book.publication_year }}</p>
+                            <p class="entry-meta">
+                                {% for author in book.authors.all %}
+                                    <a href="{% url 'library:author-detail' author.slug %}">{{ author }}</a>{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    <em>Sem autor</em>
+                                {% endfor %}
+                                &middot; {{ book.publication_year }}
+                            </p>
                         </div>
                         {% if book.is_available %}
                             <span class="status available">Disponível</span>
