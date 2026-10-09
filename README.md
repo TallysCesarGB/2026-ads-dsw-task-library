@@ -46,6 +46,47 @@ sem autor. Alternativas consideradas:
 - `SET_NULL`: exigiria `null=True` no campo e deixaria livros "órfãos",
   o que não faz sentido aqui.
 
+## Migração FK → M2M
+
+### 1. Que dados se perdem quando a migração é revertida? Por quê?
+
+O que se perde é o **vínculo livro↔autor** que estava na tabela intermediária
+`library_book_authors`.
+
+Ao reverter a `0006`, o Django recria a coluna `library_book.author_id` — mas
+**vazia**. A `0005` está marcada com `RunPython.noop` no reverse, então ela não
+copia os dados de volta. Ou seja: o schema volta a ter a FK, mas nenhum livro
+sabe quem é seu autor.
+
+O motivo é que a migração foi declarada como **one-way**: o `reverse` da data
+migration não foi implementado. Implementá-lo exigiria percorrer todos os
+livros, pegar o primeiro autor do M2M e gravar em `author_id`. Como um livro
+pode ter vários autores no M2M (e a FK só aceita um), a reversão seria
+**destrutiva por natureza** — os autores "extras" seriam descartados de
+qualquer forma.
+
+### 2. Com ManyToMany, o que acontece com um livro quando o seu único autor
+   é apagado? Como garantir que todo livro tenha pelo menos um autor?
+
+Ao apagar um autor, o Django simplesmente remove as linhas correspondentes da
+tabela intermediária `library_book_authors`. O **livro continua existindo**,
+mas fica sem nenhum autor — vira um livro órfão. Não há erro nem aviso.
+
+Para garantir que todo livro tenha pelo menos um autor, há três abordagens
+possíveis:
+
+- **Validação no formulário/admin**: usar `clean()` no ModelForm ou
+  `ModelAdmin.form` para exigir pelo menos um autor ao salvar. Não protege
+  contra exclusões em massa, mas cobre o fluxo normal de edição.
+- **Signal `pre_delete` no Author**: verificar se o autor é o último de
+  algum livro e bloquear a exclusão (ou reatribuir para outro autor).
+- **`on_delete=PROTECT` no through explícito**: declarar uma tabela
+  intermediária com `through=` e uma FK com `PROTECT` para o autor. Isso
+  faz o Django recusar a exclusão de um autor que ainda tenha livros.
+
+A solução mais simples para o escopo da atividade é a primeira: validação
+no admin, impedindo salvar um livro sem autores.
+
 ## Stack
 
 | Camada       | Tecnologia                        |
