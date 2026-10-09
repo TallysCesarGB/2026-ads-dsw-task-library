@@ -108,6 +108,26 @@ main {
     display: none;
 }
 
+.entry-meta a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.entry-meta a:hover,
+.entry-meta a:focus-visible {
+    color: #9c7a3c;
+    border-bottom-color: currentColor;
+}
+
+.masthead a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
 .entry-number {
     font-family: 'Lora', serif;
     font-style: italic;
