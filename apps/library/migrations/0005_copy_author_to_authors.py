@@ -2,7 +2,16 @@ from django.db import migrations
 
 
 def copy_author_to_authors(apps, schema_editor):
-    """Copia o autor do FK antigo (Book.author) para o novo M2M (Book.authors)."""
+    """
+        Copia cada Book.author (FK) para Book.authors (M2M).
+
+        Usa apps.get_model em vez de importar direto para que a migration
+        enxergue o estado histórico dos modelos — a versão que existia no
+        momento em que a 0005 rodou, não a versão atual.
+
+        Acesso book.author_id (e não book.author) para evitar uma query
+        extra por linha; o campo _id já está carregado na instância.
+    """
     Book = apps.get_model('library', 'Book')
 
     for book in Book.objects.all():
