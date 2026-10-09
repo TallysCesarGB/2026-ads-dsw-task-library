@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mini Biblioteca</title>
+    <title>{{ author.name }} &mdash; Mini Biblioteca</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,29 +13,33 @@
 <body>
     <main>
         <div class="masthead">
-            <p>Catálogo</p>
-            <h1>Livros cadastrados</h1>
+            <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
+            <h1>{{ author.name }}</h1>
+            <p class="author-meta">
+                {% if author.nationality %}{{ author.nationality }}{% endif %}
+                {% if author.birth_year %}
+                    {% if author.nationality %} &middot; {% endif %}
+                    Nascido em {{ author.birth_year }}
+                {% endif %}
+            </p>
         </div>
 
         {% if books %}
-            <div class="search-field">
-                <label for="book-search" class="sr-only">Buscar por título ou autor</label>
-                <input
-                    type="search"
-                    id="book-search"
-                    data-book-search
-                    placeholder="Buscar por título ou autor&hellip;"
-                    autocomplete="off"
-                >
-            </div>
-
-            <ul class="catalog" data-catalog>
+            <ul class="catalog">
                 {% for book in books %}
-                    <li data-entry data-title="{{ book.title }}" data-author="{{ book.author }}">
+                    <li data-entry data-title="{{ book.title }}" data-author="{{ author.name }}">
                         <span class="entry-number">{{ forloop.counter }}</span>
                         <div class="entry-body">
                             <p class="entry-title">{{ book.title }}</p>
-                            <p class="entry-meta"><a href="{% url 'library:author-detail' book.author.slug %}"> {{ book.author }} </a>&middot; {{ book.publication_year }}</p>
+                            <p class="entry-meta">
+                                {{ book.publication_year }}
+                                {% if book.category.all %}
+                                    &middot;
+                                    {% for cat in book.category.all %}
+                                        {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </p>
                         </div>
                         {% if book.is_available %}
                             <span class="status available">Disponível</span>
@@ -45,15 +49,11 @@
                     </li>
                 {% endfor %}
             </ul>
-
-            <p class="no-results" data-no-results hidden>Nenhum livro encontrado para essa busca.</p>
         {% else %}
-            <p class="empty">Nenhum livro cadastrado ainda.</p>
+            <p class="empty">Nenhum livro cadastrado para este autor.</p>
         {% endif %}
 
         <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
     </main>
-
-    <script src="{% static 'library/js/book-list.js' %}" defer></script>
 </body>
 </html>
