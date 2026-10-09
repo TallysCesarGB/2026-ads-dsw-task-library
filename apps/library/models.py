@@ -6,10 +6,10 @@ class Book(models.Model):
     """Represents a book available in the library."""
 
     title = models.CharField(max_length=200)
-    author = models.ForeignKey(
+    authors = models.ManyToManyField(
         'Author',
-        on_delete=models.CASCADE,
-        related_name='books'
+        related_name='books',
+        blank=True
     )
     publication_year = models.IntegerField()
     is_available = models.BooleanField(default=True)
