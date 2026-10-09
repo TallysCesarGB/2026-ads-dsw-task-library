@@ -35,6 +35,17 @@ que é exibido na tela** — títulos, rótulos, mensagens — está em portugu�
   disponibilidade
 - Fixture com 8 livros de exemplo para popular o banco rapidamente
 
+## on_delete em Book.author
+
+Escolhi `models.CASCADE` porque, no contexto de uma biblioteca, faz sentido
+que apagar um autor também remova os livros dele — um livro não existe
+sem autor. Alternativas consideradas:
+
+- `PROTECT`: impediria apagar o autor enquanto houvesse livros, mas isso
+  bloquearia a curadoria do acervo.
+- `SET_NULL`: exigiria `null=True` no campo e deixaria livros "órfãos",
+  o que não faz sentido aqui.
+
 ## Stack
 
 | Camada       | Tecnologia                        |
