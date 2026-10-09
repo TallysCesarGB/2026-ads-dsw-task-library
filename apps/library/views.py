@@ -5,7 +5,7 @@ from .models import Book, Author
 
 def list_books(request):
     """Fetch every registered book and send it to the template."""
-    books = Book.objects.all()
+    books = Book.objects.prefetch_related('authors', 'category')
     context = {'books': books}
     return render(request, 'library/book_list.html', context)
 
