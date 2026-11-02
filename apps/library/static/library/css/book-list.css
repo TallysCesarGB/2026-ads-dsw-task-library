@@ -260,3 +260,37 @@ footer {
 .btn:hover {
     filter: brightness(1.1);
 }
+
+.masthead-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.masthead .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--brass);
+    border-radius: 4px;
+    color: var(--brass);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.masthead .btn-link:hover {
+    background: var(--brass);
+    color: var(--ink);
+}
+
+.masthead .btn-link:focus-visible {
+    outline: 2px solid var(--parchment);
+    outline-offset: 2px;
+}

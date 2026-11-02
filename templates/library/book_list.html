@@ -14,8 +14,12 @@
     <main>
         <div class="masthead">
             <p>Catálogo</p>
-            <h1>Livros cadastrados</h1>
-            <p><a href="{% url 'library:author-create' %}">+ Novo autor</a></p>
+            <div class="masthead-row">
+                <h1>Livros cadastrados</h1>
+                <a href="{% url 'library:author-create' %}" class="btn-link">
+                    <span aria-hidden="true">+</span> Novo autor
+                </a>
+            </div>
         </div>
 
         {% if books %}
