@@ -1,5 +1,7 @@
-from django.shortcuts import get_object_or_404 ,render
+from django.shortcuts import get_object_or_404, redirect ,render
 
+from .forms import AuthorForm
+from .models import Author, Book
 from .models import Book, Author
 
 
@@ -18,3 +20,15 @@ def author_detail(request, slug):
         'books': books
     }
     return render(request, 'library/author_detail.html', context)
+
+def author_create(request):
+    """Display and process the form to register a new author."""
+    if request.method == 'POST':
+        form = AuthorForm(request.POST)
+        if form.is_valid():
+            author = form.save()
+            return redirect('library:author-detail', slug=author.slug)
+    else:
+        form = AuthorForm()
+
+    return render(request, 'library/author_form.html', {'form': form})

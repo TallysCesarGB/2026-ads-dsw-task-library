@@ -15,6 +15,7 @@
         <div class="masthead">
             <p>Catálogo</p>
             <h1>Livros cadastrados</h1>
+            <p><a href="{% url 'library:author-create' %}">+ Novo autor</a></p>
         </div>
 
         {% if books %}
