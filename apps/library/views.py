@@ -36,6 +36,11 @@ class AuthorDetailView(DetailView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['books'] = self.object.books.prefetch_related('category')
+        return context
+
 # def author_create(request):
 #     """Display and process the form to register a new author."""
 #     if request.method == 'POST':
