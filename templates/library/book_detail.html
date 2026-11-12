@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ book.title }} &mdash; Mini Biblioteca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'library/css/book-list.css' %}">
+</head>
+<body>
+    <main>
+        <div class="masthead">
+            <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
+            <div class="masthead-row">
+                <h1>{{ book.title }}</h1>
+                <a href="{% url 'library:book-update' book.slug %}" class="btn-link">
+                    <span aria-hidden="true">&#9998;</span> Editar livro
+                </a>
+            </div>
+        </div>
+
+        <dl class="detail-list">
+            <div class="detail-row">
+                <dt>Autores</dt>
+                <dd>
+                    {% for author in book.authors.all %}
+                        <a href="{% url 'library:author-detail' author.slug %}">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        <em>Sem autor</em>
+                    {% endfor %}
+                </dd>
+            </div>
+
+            <div class="detail-row">
+                <dt>Ano de publicação</dt>
+                <dd>{{ book.publication_year }}</dd>
+            </div>
+
+            <div class="detail-row">
+                <dt>Categorias</dt>
+                <dd>
+                    {% for cat in book.category.all %}
+                        <span class="tag">{{ cat.name }}</span>
+                    {% empty %}
+                        <em>Sem categoria</em>
+                    {% endfor %}
+                </dd>
+            </div>
+
+            <div class="detail-row">
+                <dt>Situação</dt>
+                <dd>
+                    {% if book.is_available %}
+                        <span class="status available">Disponível</span>
+                    {% else %}
+                        <span class="status unavailable">Emprestado</span>
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+
+        <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
+    </main>
+</body>
+</html>
