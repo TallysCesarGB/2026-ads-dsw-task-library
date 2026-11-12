@@ -45,7 +45,9 @@
                     >
                         <span class="entry-number">{{ forloop.counter }}</span>
                         <div class="entry-body">
-                            <p class="entry-title">{{ book.title }}</p>
+                            <p class="entry-title">
+                                <a href="{% url 'library:book-detail' book.slug %}">{{ book.title }}</a>
+                            </p>
                             <p class="entry-meta">
                                 {% for author in book.authors.all %}
                                     <a href="{% url 'library:author-detail' author.slug %}">{{ author }}</a>{% if not forloop.last %}, {% endif %}
