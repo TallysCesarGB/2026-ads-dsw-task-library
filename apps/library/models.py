@@ -6,14 +6,11 @@ class Book(models.Model):
     """Represents a book available in the library."""
 
     title = models.CharField(max_length=200)
-    authors = models.ManyToManyField(
-        'Author',
-        related_name='books',
-        blank=True
-    )
+    authors = models.ManyToManyField('Author', related_name='books', blank=True)
     publication_year = models.IntegerField()
     is_available = models.BooleanField(default=True)
     category = models.ManyToManyField('Category', related_name='books')
+    slug = models.SlugField(max_length=140, unique=True, blank=True, null=True)
 
     class Meta:
         ordering = ['title']
@@ -22,6 +19,24 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.publication_year})"
+
+    def save(self, *args, **kwargs):
+        title_changed = True
+        if self.pk:
+            old = Book.objects.get(pk=self.pk)
+            title_changed = old.title != self.title
+
+        if title_changed or not self.slug:
+            base = slugify(self.title)[:130] or 'livro'
+            slug = base
+            counter = 2
+            while Book.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base}-{counter}"
+                counter += 1
+            self.slug = slug
+
+        super().save(*args, **kwargs)
+
 
 class Author(models.Model):
     """Represents an author of books in the library."""

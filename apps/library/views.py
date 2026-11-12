@@ -1,6 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect ,render
-from django.views.generic import ListView, DetailView, CreateView
-
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView
+)
 from .forms import AuthorForm
 from .models import Author, Book
 from .models import Book, Author
@@ -11,6 +15,39 @@ class BookListView(ListView):
     model = Book
     template_name = 'library/book_list.html'
     context_object_name = 'books'
+
+
+class BookCreateView(CreateView):
+    """Class-based view to create a new book."""
+    model = Book
+    fields = ['title', 'authors', 'publication_year', 'is_available', 'category']
+    template_name = 'library/book_form.html'
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        book = form.save()
+        return redirect('library:book-list')
+
+
+class BookUpdateView(UpdateView):
+    """Class-based view to update an existing book."""
+    model = Book
+    fields = ['title', 'authors', 'publication_year', 'is_available', 'category']
+    template_name = 'library/book_form.html'
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        book = form.save()
+        return redirect('library:book-list')
+
+
+class BookDetailView(DetailView):
+    """Class-based view to display details of a specific book."""
+    model = Book
+    template_name = 'library/book_detail.html'
+    context_object_name = 'book'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
 
 class AuthorDetailView(DetailView):
