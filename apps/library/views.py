@@ -1,62 +1,66 @@
-from django.shortcuts import get_object_or_404, redirect ,render
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import (
-    ListView,
-    DetailView,
     CreateView,
-    UpdateView
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
 )
-from .forms import AuthorForm
+
+from .forms import AuthorForm, BookForm
 from .models import Author, Book
-from .models import Book, Author
 
 
 class BookListView(ListView):
-    """Class-based view to list all books."""
-    model = Book
+    """List all books."""
+
+    queryset = Book.objects.prefetch_related('authors')
     template_name = 'library/book_list.html'
     context_object_name = 'books'
 
 
-class BookCreateView(CreateView):
-    """Class-based view to create a new book."""
-    model = Book
-    fields = ['title', 'authors', 'publication_year', 'is_available', 'category']
-    template_name = 'library/book_form.html'
+class BookDetailView(DetailView):
+    """Display the details of a specific book."""
 
-    def form_valid(self, form):
-        """If the form is valid, save the associated model."""
-        book = form.save()
-        return redirect('library:book-list')
+    queryset = Book.objects.prefetch_related('authors', 'category')
+    template_name = 'library/book_detail.html'
+    context_object_name = 'book'
+
+
+class BookCreateView(CreateView):
+    """Create a new book (and, on the fly, new authors/categories)."""
+
+    model = Book
+    form_class = BookForm
+    template_name = 'library/book_form.html'
+    # success_url: defaults to Book.get_absolute_url()
 
 
 class BookUpdateView(UpdateView):
-    """Class-based view to update an existing book."""
+    """Update an existing book."""
+
     model = Book
-    fields = ['title', 'authors', 'publication_year', 'is_available', 'category']
+    form_class = BookForm
     template_name = 'library/book_form.html'
-
-    def form_valid(self, form):
-        """If the form is valid, save the associated model."""
-        book = form.save()
-        return redirect('library:book-list')
+    # success_url: defaults to Book.get_absolute_url()
 
 
-class BookDetailView(DetailView):
-    """Class-based view to display details of a specific book."""
+class BookDeleteView(DeleteView):
+    """Ask for confirmation, then delete a book."""
+
     model = Book
-    template_name = 'library/book_detail.html'
+    template_name = 'library/book_confirm_delete.html'
     context_object_name = 'book'
-    slug_field = 'slug'
-    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('library:book-list')
 
 
 class AuthorDetailView(DetailView):
-    """Class-based view to display details of a specific author."""
+    """Display the details of a specific author."""
+
     model = Author
     template_name = 'library/author_detail.html'
     context_object_name = 'author'
-    slug_field = 'slug'
-    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,12 +69,12 @@ class AuthorDetailView(DetailView):
 
 
 class AuthorCreateView(CreateView):
-    """Class-based view to create a new author."""
+    """Create a new author."""
+
     model = Author
     form_class = AuthorForm
     template_name = 'library/author_form.html'
 
     def form_valid(self, form):
-        """If the form is valid, save the associated model."""
         author = form.save()
         return redirect('library:author-detail', slug=author.slug)
