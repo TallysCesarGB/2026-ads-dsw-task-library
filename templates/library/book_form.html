@@ -13,8 +13,13 @@
 <body>
     <main>
         <div class="masthead">
-            <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
-            <h1>{% if form.instance.pk %}Editar livro{% else %}Novo livro{% endif %}</h1>
+            {% if form.instance.pk %}
+                <p><a href="{% url 'library:book-detail' form.instance.slug %}">&larr; Voltar ao livro</a></p>
+                <h1>Editar livro</h1>
+            {% else %}
+                <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
+                <h1>Novo livro</h1>
+            {% endif %}
         </div>
 
         <form method="post" class="form" novalidate>
@@ -36,7 +41,7 @@
                 {% endfor %}
             </div>
 
-            <div class="form-field{% if form.publication_year.errors %} has-error{% endif %}">
+            <div class="form-field form-field-narrow{% if form.publication_year.errors %} has-error{% endif %}">
                 {{ form.publication_year.label_tag }}
                 {{ form.publication_year }}
                 {% for error in form.publication_year.errors %}
@@ -44,43 +49,12 @@
                 {% endfor %}
             </div>
 
-            <fieldset class="form-field choice-group{% if form.authors.errors %} has-error{% endif %}">
-                <legend>{{ form.authors.label }}</legend>
-                <div class="choice-list">
-                    {% for checkbox in form.authors %}
-                        <label class="choice" for="{{ checkbox.id_for_label }}">
-                            {{ checkbox.tag }}
-                            <span>{{ checkbox.choice_label }}</span>
-                        </label>
-                    {% empty %}
-                        <p class="choice-empty">
-                            Nenhum autor cadastrado.
-                            <a href="{% url 'library:author-create' %}">Cadastrar autor</a>
-                        </p>
-                    {% endfor %}
-                </div>
-                {% for error in form.authors.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
-            </fieldset>
+            {% include "library/_combo_field.html" with field=form.authors new_names=form.new_author_names new_field="new_authors" add_label="autor" empty_text="Nenhum autor cadastrado. Digite um nome para adicionar." hint="Digite para buscar. Se o autor não existir, adicione-o na hora." %}
 
-            <fieldset class="form-field choice-group{% if form.category.errors %} has-error{% endif %}">
-                <legend>{{ form.category.label }}</legend>
-                <div class="choice-list">
-                    {% for checkbox in form.category %}
-                        <label class="choice" for="{{ checkbox.id_for_label }}">
-                            {{ checkbox.tag }}
-                            <span>{{ checkbox.choice_label }}</span>
-                        </label>
-                    {% endfor %}
-                </div>
-                {% for error in form.category.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
-            </fieldset>
+            {% include "library/_combo_field.html" with field=form.category new_names=form.new_category_names new_field="new_categories" add_label="categoria" empty_text="Nenhuma categoria cadastrada. Digite um nome para adicionar." hint="Digite para buscar. Se a categoria não existir, adicione-a na hora." %}
 
-            <div class="form-field form-field-check{% if form.is_available.errors %} has-error{% endif %}">
-                <label class="choice" for="{{ form.is_available.id_for_label }}">
+            <div class="form-field{% if form.is_available.errors %} has-error{% endif %}">
+                <label class="check" for="{{ form.is_available.id_for_label }}">
                     {{ form.is_available }}
                     <span>{{ form.is_available.label }}</span>
                 </label>
@@ -89,15 +63,22 @@
                 {% endfor %}
             </div>
 
-            <div class="form-actions">
+            <div class="actions">
                 <button type="submit" class="btn">
                     {% if form.instance.pk %}Salvar alterações{% else %}Salvar livro{% endif %}
                 </button>
-                <a href="{% url 'library:book-list' %}" class="btn-cancel">Cancelar</a>
+                {% if form.instance.pk %}
+                    <a href="{% url 'library:book-detail' form.instance.slug %}" class="btn btn-outline">Cancelar</a>
+                    <a href="{% url 'library:book-delete' form.instance.slug %}" class="btn btn-outline-danger push-right">Excluir livro</a>
+                {% else %}
+                    <a href="{% url 'library:book-list' %}" class="btn btn-outline">Cancelar</a>
+                {% endif %}
             </div>
         </form>
 
         <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
     </main>
+
+    {% include "library/_combo_script.html" %}
 </body>
 </html>

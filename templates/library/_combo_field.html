@@ -1,0 +1,49 @@
+{% comment %}
+Searchable multi-select. Expects: field, new_names, new_field, add_label,
+empty_text, hint. Without JavaScript it falls back to the plain <select multiple>.
+{% endcomment %}
+<div class="form-field{% if field.errors %} has-error{% endif %}">
+    {{ field.label_tag }}
+    <div
+        class="combo"
+        data-combo
+        data-new-name="{{ new_field }}"
+        data-add-label="{{ add_label }}"
+        data-empty="{{ empty_text }}"
+    >
+        {{ field }}
+        {% for name in new_names %}
+            <input type="hidden" name="{{ new_field }}" value="{{ name }}" data-new>
+        {% endfor %}
+
+        <div class="combo-box" data-combo-box hidden>
+            <ul class="chips" data-chips></ul>
+            <input
+                type="text"
+                class="combo-input"
+                id="{{ field.auto_id }}_search"
+                data-combo-input
+                role="combobox"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="{{ field.auto_id }}_list"
+                placeholder="Buscar ou digitar para adicionar&hellip;"
+                autocomplete="off"
+            >
+        </div>
+        <ul
+            class="combo-list"
+            id="{{ field.auto_id }}_list"
+            data-combo-list
+            role="listbox"
+            aria-multiselectable="true"
+            aria-label="{{ field.label }}"
+            hidden
+        ></ul>
+    </div>
+    {% for error in field.errors %}
+        <p class="field-error">{{ error }}</p>
+    {% endfor %}
+    <p class="hint">{{ hint }}</p>
+</div>

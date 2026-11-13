@@ -16,51 +16,73 @@
             <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
             <div class="masthead-row">
                 <h1>{{ book.title }}</h1>
-                <a href="{% url 'library:book-update' book.slug %}" class="btn-link">
-                    <span aria-hidden="true">&#9998;</span> Editar livro
-                </a>
+                {% if book.is_available %}
+                    <span class="status available">Disponível</span>
+                {% else %}
+                    <span class="status unavailable">Emprestado</span>
+                {% endif %}
             </div>
+            <p class="book-byline">
+                {% for author in book.authors.all %}
+                    <a href="{% url 'library:author-detail' author.slug %}">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Autor não informado
+                {% endfor %}
+                &middot; {{ book.publication_year }}
+            </p>
         </div>
 
-        <dl class="detail-list">
-            <div class="detail-row">
-                <dt>Autores</dt>
-                <dd>
-                    {% for author in book.authors.all %}
-                        <a href="{% url 'library:author-detail' author.slug %}">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}
-                    {% empty %}
-                        <em>Sem autor</em>
-                    {% endfor %}
-                </dd>
-            </div>
+        <dl class="sheet">
+            <dt>Autores</dt>
+            <dd>
+                {% if book.authors.all %}
+                    <ul class="author-list">
+                        {% for author in book.authors.all %}
+                            <li>
+                                <a href="{% url 'library:author-detail' author.slug %}">{{ author.name }}</a>
+                                {% if author.nationality or author.birth_year %}
+                                    <span class="author-note">
+                                        {% if author.nationality %}{{ author.nationality }}{% endif %}{% if author.nationality and author.birth_year %} &middot; {% endif %}{% if author.birth_year %}nasc. {{ author.birth_year }}{% endif %}
+                                    </span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <em class="muted">Sem autor cadastrado</em>
+                {% endif %}
+            </dd>
 
-            <div class="detail-row">
-                <dt>Ano de publicação</dt>
-                <dd>{{ book.publication_year }}</dd>
-            </div>
+            <dt>Publicação</dt>
+            <dd>{{ book.publication_year }}</dd>
 
-            <div class="detail-row">
-                <dt>Categorias</dt>
-                <dd>
-                    {% for cat in book.category.all %}
-                        <span class="tag">{{ cat.name }}</span>
-                    {% empty %}
-                        <em>Sem categoria</em>
-                    {% endfor %}
-                </dd>
-            </div>
+            <dt>Categorias</dt>
+            <dd>
+                {% if book.category.all %}
+                    <ul class="tag-list">
+                        {% for cat in book.category.all %}
+                            <li class="tag">{{ cat.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <em class="muted">Sem categoria</em>
+                {% endif %}
+            </dd>
 
-            <div class="detail-row">
-                <dt>Situação</dt>
-                <dd>
-                    {% if book.is_available %}
-                        <span class="status available">Disponível</span>
-                    {% else %}
-                        <span class="status unavailable">Emprestado</span>
-                    {% endif %}
-                </dd>
-            </div>
+            <dt>Situação</dt>
+            <dd>
+                {% if book.is_available %}
+                    Disponível para empréstimo
+                {% else %}
+                    Emprestado no momento
+                {% endif %}
+            </dd>
         </dl>
+
+        <div class="actions">
+            <a href="{% url 'library:book-update' book.slug %}" class="btn">Editar livro</a>
+            <a href="{% url 'library:book-delete' book.slug %}" class="btn btn-outline-danger push-right">Excluir livro</a>
+        </div>
 
         <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
     </main>

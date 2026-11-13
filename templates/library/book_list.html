@@ -16,9 +16,14 @@
             <p>Catálogo</p>
             <div class="masthead-row">
                 <h1>Livros cadastrados</h1>
-                <a href="{% url 'library:author-create' %}" class="btn-link">
-                    <span aria-hidden="true">+</span> Novo autor
-                </a>
+                <div class="masthead-actions">
+                    <a href="{% url 'library:book-create' %}" class="btn-link btn-link-solid">
+                        <span aria-hidden="true">+</span> Novo livro
+                    </a>
+                    <a href="{% url 'library:author-create' %}" class="btn-link">
+                        <span aria-hidden="true">+</span> Novo autor
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -36,12 +41,10 @@
 
             <ul class="catalog" data-catalog>
                 {% for book in books %}
-                    <li 
+                    <li
                         data-entry
-                        data-title="{{ book.title }}" 
-                        data-author="{% for a in book.authors.all %}
-                            {{ a.name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}"
+                        data-title="{{ book.title }}"
+                        data-author="{% for a in book.authors.all %}{{ a.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                     >
                         <span class="entry-number">{{ forloop.counter }}</span>
                         <div class="entry-body">

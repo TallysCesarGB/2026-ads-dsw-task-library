@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Excluir {{ book.title }} &mdash; Mini Biblioteca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'library/css/book-list.css' %}">
+</head>
+<body>
+    <main>
+        <div class="masthead">
+            <p><a href="{% url 'library:book-detail' book.slug %}">&larr; Voltar ao livro</a></p>
+            <h1>Excluir livro</h1>
+        </div>
+
+        <p class="confirm-text">
+            Tem certeza de que deseja excluir <strong class="entry-title"><a href="{% url 'library:book-detail' book.slug %}">{{ book.title }}</a></strong>?
+            Esta ação não pode ser desfeita.
+        </p>
+
+        <ul class="catalog">
+            <li>
+                <div class="entry-body">
+                    <p class="entry-title"><a href="{% url 'library:book-detail' book.slug %}">{{ book.title }}</a></p>
+                    <p class="entry-meta">
+                        {% for author in book.authors.all %}<a href="{% url 'library:author-detail' author.slug %}">{{ author }}</a>{% if not forloop.last %}, {% endif %}{% empty %}<em>Sem autor</em>{% endfor %}
+                        &middot; {{ book.publication_year }}
+                    </p>
+                </div>
+            </li>
+        </ul>
+
+        <form method="post" class="actions">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir definitivamente</button>
+            <a href="{% url 'library:book-detail' book.slug %}" class="btn btn-outline">Cancelar</a>
+        </form>
+
+        <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
+    </main>
+</body>
+</html>
