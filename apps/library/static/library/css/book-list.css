@@ -1,11 +1,14 @@
 :root {
     --ink: #1c2430;
+    --ink-raised: #263140;
     --parchment: #f2ead9;
     --brass: #9c7a3c;
+    --brass-light: #c9a45c;
     --forest: #3a5744;
     --forest-bg: #e3ebe3;
     --brick: #8a4636;
     --brick-bg: #f1e2dd;
+    --brick-text: #e0a090;
 }
 
 * {
@@ -26,6 +29,8 @@ main {
     width: 100%;
     max-width: 680px;
 }
+
+/* ---------- Masthead ---------- */
 
 .masthead {
     border-bottom: 1px solid rgba(242, 234, 217, 0.25);
@@ -48,6 +53,60 @@ main {
     line-height: 1.15;
     margin: 0;
 }
+
+.masthead a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+.masthead-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.masthead-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.masthead .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--brass);
+    border-radius: 4px;
+    color: var(--brass);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.masthead .btn-link:hover,
+.masthead .btn-link-solid {
+    background: var(--brass);
+    color: var(--ink);
+}
+
+.masthead .btn-link-solid:hover {
+    filter: brightness(1.1);
+}
+
+.masthead .btn-link:focus-visible {
+    outline: 2px solid var(--parchment);
+    outline-offset: 2px;
+}
+
+/* ---------- Catalog ---------- */
 
 .search-field {
     width: 100%;
@@ -109,6 +168,7 @@ main {
     display: none;
 }
 
+.entry-title a,
 .entry-meta a {
     color: inherit;
     text-decoration: none;
@@ -116,17 +176,12 @@ main {
     transition: border-color 0.15s ease, color 0.15s ease;
 }
 
+.entry-title a:hover,
+.entry-title a:focus-visible,
 .entry-meta a:hover,
 .entry-meta a:focus-visible {
-    color: #9c7a3c;
+    color: var(--brass);
     border-bottom-color: currentColor;
-}
-
-.masthead a {
-    color: inherit;
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.02em;
 }
 
 .entry-number {
@@ -197,16 +252,194 @@ footer {
     color: rgba(242, 234, 217, 0.45);
 }
 
-@media (max-width: 480px) {
-    .catalog li {
-        gap: 1rem;
-    }
+/* ---------- Buttons ---------- */
 
-    .status {
-        font-size: 0.72rem;
-        padding: 0.25rem 0.55rem;
-    }
+.btn {
+    display: inline-block;
+    background: var(--brass);
+    color: var(--ink);
+    border: 1px solid var(--brass);
+    border-radius: 4px;
+    padding: 0.7rem 1.4rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
 }
+
+.btn:hover {
+    filter: brightness(1.1);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--parchment);
+    outline-offset: 2px;
+}
+
+.btn-danger {
+    background: var(--brick);
+    color: var(--parchment);
+}
+
+.btn-outline-danger {
+    background: transparent;
+    border: 1px solid var(--brick);
+    color: var(--brick-text);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-outline-danger:hover {
+    filter: none;
+    background: var(--brick);
+    color: var(--parchment);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--brass);
+    border: 1px solid var(--brass);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-outline:hover {
+    filter: none;
+    background: var(--brass);
+    color: var(--ink);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+.actions .push-right {
+    margin-left: auto;
+}
+
+/* ---------- Book detail ---------- */
+
+.masthead .book-byline {
+    margin: 0.9rem 0 0;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: rgba(242, 234, 217, 0.75);
+}
+
+.masthead .book-byline a {
+    font-size: inherit;
+    border-bottom: 1px solid rgba(242, 234, 217, 0.3);
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.masthead .book-byline a:hover,
+.masthead .book-byline a:focus-visible {
+    color: var(--brass);
+    border-bottom-color: currentColor;
+}
+
+.sheet {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    margin: 0;
+}
+
+.sheet dt,
+.sheet dd {
+    margin: 0;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid rgba(242, 234, 217, 0.14);
+}
+
+.sheet dt:first-of-type,
+.sheet dt:first-of-type + dd {
+    padding-top: 0;
+}
+
+.sheet dt {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--brass);
+}
+
+.sheet dd {
+    min-width: 0;
+    font-size: 1rem;
+}
+
+.sheet a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(242, 234, 217, 0.3);
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.sheet a:hover,
+.sheet a:focus-visible {
+    color: var(--brass);
+    border-bottom-color: currentColor;
+}
+
+.author-list,
+.tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.author-list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.author-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    align-items: flex-start;
+}
+
+.author-note {
+    font-size: 0.85rem;
+    color: rgba(242, 234, 217, 0.6);
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.tag {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid rgba(242, 234, 217, 0.25);
+    border-radius: 3px;
+    font-size: 0.85rem;
+    color: rgba(242, 234, 217, 0.85);
+}
+
+.muted {
+    color: rgba(242, 234, 217, 0.55);
+}
+
+.confirm-text {
+    margin: 0 0 1.75rem;
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    line-height: 1.55;
+}
+
+.confirm-text strong {
+    font-weight: 600;
+}
+
+/* ---------- Forms ---------- */
 
 .form-field {
     margin-bottom: 1.4rem;
@@ -219,7 +452,8 @@ footer {
     color: var(--brass);
 }
 
-.form-field input {
+.form-field input,
+.form-field select {
     width: 100%;
     background: rgba(242, 234, 217, 0.06);
     border: 1px solid rgba(242, 234, 217, 0.2);
@@ -232,66 +466,250 @@ footer {
     transition: border-color 0.15s ease;
 }
 
-.form-field input:focus {
+.form-field input::placeholder {
+    color: rgba(242, 234, 217, 0.4);
+}
+
+.form-field input:focus,
+.form-field select:focus {
     border-color: var(--brass);
 }
 
-.form-field.has-error input {
+.form-field.has-error input,
+.form-field.has-error select {
     border-color: var(--brick);
+}
+
+.form-field-narrow input {
+    max-width: 12rem;
 }
 
 .field-error {
     margin: 0.4rem 0 0;
     font-size: 0.85rem;
-    color: #e0a090;
+    color: var(--brick-text);
 }
 
-.btn {
-    background: var(--brass);
-    color: var(--ink);
-    border: 0;
+.form-field .hint {
+    margin: 0.45rem 0 0;
+    font-size: 0.8rem;
+    color: rgba(242, 234, 217, 0.5);
+}
+
+.form-alert {
+    margin-bottom: 1.4rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--brick-bg);
+    border-left: 3px solid var(--brick);
+    border-radius: 3px;
+    color: var(--brick);
+    font-size: 0.9rem;
+}
+
+.form-alert p {
+    margin: 0;
+}
+
+/* Availability checkbox */
+
+.form-field label.check {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    background: rgba(242, 234, 217, 0.06);
+    border: 1px solid rgba(242, 234, 217, 0.2);
     border-radius: 4px;
-    padding: 0.7rem 1.4rem;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
     font-size: 0.95rem;
+    color: var(--parchment);
     cursor: pointer;
 }
 
-.btn:hover {
-    filter: brightness(1.1);
+.form-field input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--brass);
 }
 
-.masthead-row {
+/* ---------- Searchable multi-select ---------- */
+
+.combo {
+    position: relative;
+}
+
+.combo-box {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 1rem;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.9rem;
+    padding: 0.4rem 0.5rem;
+    background: rgba(242, 234, 217, 0.06);
+    border: 1px solid rgba(242, 234, 217, 0.2);
+    border-radius: 4px;
+    cursor: text;
+    transition: border-color 0.15s ease;
 }
 
-.masthead .btn-link {
+.combo-box[hidden] {
+    display: none;
+}
+
+.combo-box:focus-within {
+    border-color: var(--brass);
+}
+
+.form-field.has-error .combo-box {
+    border-color: var(--brick);
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chip {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.55rem 1.1rem;
-    border: 1px solid var(--brass);
-    border-radius: 4px;
-    color: var(--brass);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    padding: 0.2rem 0.3rem 0.2rem 0.65rem;
+    background: rgba(156, 122, 60, 0.22);
+    border: 1px solid rgba(156, 122, 60, 0.55);
+    border-radius: 3px;
+    font-size: 0.88rem;
+    color: var(--parchment);
+}
+
+.chip.is-new {
+    border-style: dashed;
+}
+
+.chip-flag {
+    font-size: 0.7rem;
+    font-style: normal;
     font-weight: 600;
-    letter-spacing: 0;
-    white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--brass-light);
 }
 
-.masthead .btn-link:hover {
-    background: var(--brass);
-    color: var(--ink);
+.chip button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: inherit;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.7;
 }
 
-.masthead .btn-link:focus-visible {
-    outline: 2px solid var(--parchment);
-    outline-offset: 2px;
+.chip button:hover,
+.chip button:focus-visible {
+    opacity: 1;
+    background: rgba(242, 234, 217, 0.15);
+}
+
+.form-field .combo-input {
+    flex: 1;
+    width: auto;
+    min-width: 9rem;
+    padding: 0.35rem 0.4rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.combo-list {
+    position: absolute;
+    z-index: 30;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 15rem;
+    margin: 0.3rem 0 0;
+    padding: 0.3rem;
+    overflow-y: auto;
+    list-style: none;
+    background: var(--ink-raised);
+    border: 1px solid rgba(242, 234, 217, 0.2);
+    border-radius: 4px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.combo-list[hidden] {
+    display: none;
+}
+
+.combo-option {
+    padding: 0.55rem 0.7rem;
+    border-radius: 3px;
+    font-size: 0.93rem;
+    color: var(--parchment);
+    cursor: pointer;
+}
+
+.combo-option.is-active {
+    background: rgba(156, 122, 60, 0.32);
+}
+
+.combo-option.is-add {
+    color: var(--brass-light);
+    font-weight: 500;
+}
+
+.combo-empty {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.88rem;
+    font-style: italic;
+    color: rgba(242, 234, 217, 0.6);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 480px) {
+    .catalog li {
+        gap: 1rem;
+    }
+
+    .status {
+        font-size: 0.72rem;
+        padding: 0.25rem 0.55rem;
+    }
+
+    .masthead h1 {
+        font-size: 1.9rem;
+    }
+
+    .sheet {
+        grid-template-columns: 1fr;
+    }
+
+    .sheet dt {
+        padding-bottom: 0.2rem;
+        border-bottom: 0;
+    }
+
+    .sheet dt:first-of-type + dd,
+    .sheet dd {
+        padding-top: 0;
+    }
+
+    .actions .push-right {
+        margin-left: 0;
+    }
 }
