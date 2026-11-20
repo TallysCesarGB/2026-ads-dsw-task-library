@@ -15,7 +15,7 @@ app_name = 'library'
 
 urlpatterns = [
     path('', BookListView.as_view(), name='book-list'),
-    ath('sobre/', AboutView.as_view(), name='about'),
+    path('sobre/', AboutView.as_view(), name='about'),
     path('author/new/', AuthorCreateView.as_view(), name='author-create'),
     path('author/<slug:slug>/', AuthorDetailView.as_view(), name='author-detail'),
     # "new/" must come before "<slug>/", otherwise it is read as a slug.
