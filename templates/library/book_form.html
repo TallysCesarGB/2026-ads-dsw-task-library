@@ -22,7 +22,7 @@
             {% endif %}
         </div>
 
-        <form method="post" class="form" enctype='multipart/form-date' novalidate>
+        <form method="post" class="form" enctype='multipart/form-data' novalidate>
             {% csrf_token %}
 
             {% if form.non_field_errors %}

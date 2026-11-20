@@ -364,3 +364,41 @@ class BookCoverTests(TestCase):
         })
         book.refresh_from_db()
         self.assertEqual(book.cover.name, old_name)
+
+class ClassBasedViewTests(TestCase):
+    """Part 3: behaviour provided by the generic views."""
+
+    def test_list_is_ordered_by_title(self):
+        for title in ['Vidas Secas', 'Capitães da Areia', 'O Cortiço']:
+            Book.objects.create(title=title, publication_year=1900)
+        response = self.client.get(reverse('library:book-list'))
+        titles = [book.title for book in response.context['books']]
+        self.assertEqual(titles, sorted(titles))
+
+    def test_missing_book_returns_404(self):
+        for name in ['book-detail', 'book-update', 'book-delete']:
+            response = self.client.get(reverse(f'library:{name}', kwargs={'slug': 'nao-existe'}))
+            self.assertEqual(response.status_code, 404, name)
+
+    def test_get_on_delete_does_not_delete(self):
+        book = Book.objects.create(title='Memórias', publication_year=1881)
+        self.client.get(reverse('library:book-delete', kwargs={'slug': book.slug}))
+        self.assertTrue(Book.objects.filter(pk=book.pk).exists())
+
+    def test_about_page_shows_totals(self):
+        Book.objects.create(title='Livro A', publication_year=2000)
+        Book.objects.create(title='Livro B', publication_year=2000)
+        Book.objects.create(title='Livro C', publication_year=2000, is_available=False)
+
+        response = self.client.get('/sobre/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'library/about.html')
+        self.assertEqual(response.context['total_books'], 3)
+        self.assertEqual(response.context['available_books'], 2)
+        self.assertContains(response, '<dd data-total>3</dd>', html=False)
+        self.assertContains(response, '<dd data-available>2</dd>', html=False)
+
+    def test_about_page_with_no_books(self):
+        response = self.client.get(reverse('library:about'))
+        self.assertEqual(response.context['total_books'], 0)
+        self.assertEqual(response.context['available_books'], 0)

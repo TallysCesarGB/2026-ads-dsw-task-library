@@ -252,6 +252,49 @@ footer {
     color: rgba(242, 234, 217, 0.45);
 }
 
+footer a {
+    color: inherit;
+}
+
+footer a:hover,
+footer a:focus-visible {
+    color: var(--brass);
+}
+
+/* ---------- About ---------- */
+
+.about-text {
+    margin: 0 0 2rem;
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+    margin: 0;
+}
+
+.stats div {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid rgba(242, 234, 217, 0.18);
+    border-radius: 4px;
+}
+
+.stats dt {
+    font-size: 0.85rem;
+    color: var(--brass);
+}
+
+.stats dd {
+    margin: 0.35rem 0 0;
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
 /* ---------- Buttons ---------- */
 
 .btn {

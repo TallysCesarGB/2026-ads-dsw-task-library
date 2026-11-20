@@ -79,7 +79,7 @@
             <p class="empty">Nenhum livro cadastrado ainda.</p>
         {% endif %}
 
-        <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
+        <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web &middot; <a href="{% url 'library:about' %}">Sobre</a></footer>
     </main>
 
     <script src="{% static 'library/js/book-list.js' %}" defer></script>

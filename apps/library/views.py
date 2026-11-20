@@ -1,3 +1,4 @@
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
@@ -5,6 +6,7 @@ from django.views.generic import (
     DeleteView,
     DetailView,
     ListView,
+    TemplateView,
     UpdateView,
 )
 
@@ -16,6 +18,7 @@ class BookListView(ListView):
     """List all books."""
 
     queryset = Book.objects.prefetch_related('authors')
+    ordering = ['title']
     template_name = 'library/book_list.html'
     context_object_name = 'books'
 
