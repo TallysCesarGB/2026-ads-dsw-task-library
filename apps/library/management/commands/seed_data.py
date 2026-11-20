@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from apps.library.models import Author, Book, Category
+from django.core.management import call_command
 
 
 class Command(BaseCommand):
@@ -9,6 +10,7 @@ class Command(BaseCommand):
         self.seed_categories()
         autores = self.seed_authors()
         self.seed_books(autores)
+        call_command('seed_covers', stdout=self.stdout)
         self.print_summary()
 
     # -------------------------------------------------------------
