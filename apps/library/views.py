@@ -13,6 +13,9 @@ from django.views.generic import (
 from .forms import AuthorForm, BookForm
 from .models import Author, Book
 
+from .forms import AuthorForm, BookForm
+from .models import Author, Book
+
 
 class BookListView(ListView):
     """List all books."""
@@ -56,6 +59,23 @@ class BookDeleteView(DeleteView):
     template_name = 'library/book_confirm_delete.html'
     context_object_name = 'book'
     success_url = reverse_lazy('library:book-list')
+
+
+class AboutView(TemplateView):
+    """About page, with the total of books and how many are available."""
+
+    template_name = 'library/about.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # One query that counts both numbers.
+        context.update(
+            Book.objects.aggregate(
+                total_books=Count('pk'),
+                available_books=Count('pk', filter=Q(is_available=True)),
+            )
+        )
+        return context
 
 
 class AuthorDetailView(DetailView):
