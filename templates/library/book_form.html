@@ -22,7 +22,7 @@
             {% endif %}
         </div>
 
-        <form method="post" class="form" novalidate>
+        <form method="post" class="form" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
 
             {% if form.non_field_errors %}
@@ -47,6 +47,36 @@
                 {% for error in form.publication_year.errors %}
                     <p class="field-error">{{ error }}</p>
                 {% endfor %}
+            </div>
+
+            <div class="form-field form-field-narrow{% if form.pages.errors %} has-error{% endif %}">
+                {{ form.pages.label_tag }}
+                {{ form.pages }}
+                {% for error in form.pages.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Opcional. De 1 a 5000.</p>
+            </div>
+
+            <div class="form-field{% if form.isbn.errors %} has-error{% endif %}">
+                {{ form.isbn.label_tag }}
+                {{ form.isbn }}
+                {% for error in form.isbn.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Opcional. Exatamente 13 dígitos, sem traços.</p>
+            </div>
+
+            <div class="form-field{% if form.cover.errors %} has-error{% endif %}">
+                {{ form.cover.label_tag }}
+                {% if form.instance.cover %}
+                    <img src="{{ form.instance.cover.url }}" alt="Capa atual de {{ form.instance.title }}" class="cover cover-preview">
+                {% endif %}
+                {{ form.cover }}
+                {% for error in form.cover.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Opcional. JPG ou PNG de até 1 MB.</p>
             </div>
 
             {% include "library/_combo_field.html" with field=form.authors new_names=form.new_author_names new_field="new_authors" add_label="autor" empty_text="Nenhum autor cadastrado. Digite um nome para adicionar." hint="Digite para buscar. Se o autor não existir, adicione-o na hora." %}

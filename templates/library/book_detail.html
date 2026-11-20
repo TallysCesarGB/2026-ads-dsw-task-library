@@ -32,6 +32,10 @@
             </p>
         </div>
 
+        {% if book.cover %}
+            <img src="{{ book.cover.url }}" alt="Capa de {{ book.title }}" class="cover cover-detail">
+        {% endif %}
+
         <dl class="sheet">
             <dt>Autores</dt>
             <dd>
@@ -55,6 +59,15 @@
 
             <dt>Publicação</dt>
             <dd>{{ book.publication_year }}</dd>
+            {% if book.pages %}
+                <dt>Páginas</dt>
+                <dd>{{ book.pages }}</dd>
+            {% endif %}
+
+            {% if book.isbn %}
+                <dt>ISBN</dt>
+                <dd>{{ book.isbn }}</dd>
+            {% endif %}
 
             <dt>Categorias</dt>
             <dd>
