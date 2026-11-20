@@ -47,6 +47,11 @@
                         data-author="{% for a in book.authors.all %}{{ a.name }}{% if not forloop.last %}, {% endif %}{% endfor %}"
                     >
                         <span class="entry-number">{{ forloop.counter }}</span>
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" alt="" class="cover cover-thumb" loading="lazy">
+                        {% else %}
+                            <span class="cover cover-thumb cover-empty" aria-hidden="true"></span>
+                        {% endif %}
                         <div class="entry-body">
                             <p class="entry-title">
                                 <a href="{% url 'library:book-detail' book.slug %}">{{ book.title }}</a>

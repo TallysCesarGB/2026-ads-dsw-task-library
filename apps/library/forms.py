@@ -58,7 +58,7 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = [
-            'title', 'publication_year', 'pages', 'isbn',
+            'title', 'publication_year', 'pages', 'isbn', 'cover',
             'authors', 'category', 'is_available',
         ]
         labels = {
@@ -69,6 +69,7 @@ class BookForm(forms.ModelForm):
             'authors': 'Autores',
             'category': 'Categorias',
             'is_available': 'Disponível para empréstimo',
+            'cover': 'Capa',
         }
         error_messages = {
             'title': {'required': 'Informe o título do livro.'},
@@ -84,6 +85,7 @@ class BookForm(forms.ModelForm):
             'isbn': forms.TextInput(
                 attrs={'placeholder': 'Ex.: 9788535910663', 'inputmode': 'numeric'}
             ),
+            'cover': forms.ClearableFileInput(attrs={'accept': '.jpg,.jpeg,.png'}),
         }
 
     def __init__(self, *args, **kwargs):

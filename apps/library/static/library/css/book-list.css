@@ -679,6 +679,42 @@ footer {
     color: rgba(242, 234, 217, 0.6);
 }
 
+/* ---------- Book covers ---------- */
+
+.cover {
+    display: block;
+    object-fit: cover;
+    border-radius: 3px;
+    background: rgba(242, 234, 217, 0.08);
+    border: 1px solid rgba(242, 234, 217, 0.14);
+}
+
+.catalog li .cover-thumb {
+    width: 2.6rem;
+    height: 3.8rem;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.cover-detail {
+    width: 11rem;
+    max-width: 100%;
+    aspect-ratio: 2 / 3;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cover-preview {
+    width: 5rem;
+    aspect-ratio: 2 / 3;
+    margin-bottom: 0.6rem;
+}
+
+.form-field input[type="file"] {
+    padding: 0.55rem 0.7rem;
+    cursor: pointer;
+}
+
 /* ---------- Small screens ---------- */
 
 @media (max-width: 480px) {

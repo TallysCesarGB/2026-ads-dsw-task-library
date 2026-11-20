@@ -1,4 +1,11 @@
-from django.test import TestCase
+import io
+import os
+import shutil
+import tempfile
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
+from PIL import Image
 from django.urls import reverse
 
 from .models import Author, Book, Category
@@ -209,3 +216,151 @@ class BookListTests(TestCase):
 
         self.assertContains(response, reverse('library:book-create'))
         self.assertContains(response, f'href="{book.get_absolute_url()}"')
+
+
+class BookValidatorTests(TestCase):
+    """Part 1: rules declared on the model, checked through the form and full_clean()."""
+
+    def setUp(self):
+        self.category = Category.objects.create(name='Romance')
+        self.url = reverse('library:book-create')
+
+    def post(self, **overrides):
+        data = {
+            'title': 'Iracema',
+            'publication_year': 1865,
+            'category': [self.category.pk],
+        }
+        data.update(overrides)
+        return self.client.post(self.url, data)
+
+    def assert_rejected(self, field, **overrides):
+        response = self.post(**overrides)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['form'].errors.get(field), field)
+        self.assertFalse(Book.objects.exists())
+
+    def test_title_needs_three_characters(self):
+        self.assert_rejected('title', title='Ab')
+
+    def test_year_before_1450_is_rejected(self):
+        self.assert_rejected('publication_year', publication_year=1449)
+
+    def test_year_limits_are_accepted(self):
+        from datetime import date
+        self.post(publication_year=1450)
+        self.post(title='Outro livro', publication_year=date.today().year)
+        self.assertEqual(Book.objects.count(), 2)
+
+    def test_pages_must_be_between_1_and_5000(self):
+        self.assert_rejected('pages', pages=0)
+        self.assert_rejected('pages', pages=5001)
+
+    def test_isbn_must_have_exactly_13_digits(self):
+        self.assert_rejected('isbn', isbn='123456789012')
+        self.assert_rejected('isbn', isbn='12345678901ab')
+
+    def test_pages_and_isbn_are_optional_and_saved(self):
+        self.post()
+        self.post(title='Senhora', pages=248, isbn='9788508040000')
+        self.assertEqual(Book.objects.get(title='Senhora').pages, 248)
+        self.assertEqual(Book.objects.get(title='Iracema').isbn, '')
+
+    def test_model_full_clean_applies_the_same_rules(self):
+        """The same validators run outside the form (e.g. in the Admin)."""
+        from django.core.exceptions import ValidationError
+        book = Book(title='Ab', publication_year=1200, pages=9000, isbn='12')
+        with self.assertRaises(ValidationError) as ctx:
+            book.full_clean(exclude=['slug'])
+        self.assertEqual(
+            set(ctx.exception.message_dict),
+            {'title', 'publication_year', 'pages', 'isbn'},
+        )
+    
+    def make_image(name='capa.png', fmt='PNG', size=(60, 90), noise=False):
+        """Build an in-memory image upload. With noise=True the PNG is large (> 1 MB)."""
+        if noise:
+            image = Image.frombytes('RGB', size, os.urandom(size[0] * size[1] * 3))
+        else:
+            image = Image.new('RGB', size, (156, 122, 60))
+        buffer = io.BytesIO()
+        image.save(buffer, fmt)
+        content_type = 'image/png' if fmt == 'PNG' else f'image/{fmt.lower()}'
+        return SimpleUploadedFile(name, buffer.getvalue(), content_type=content_type)
+
+
+MEDIA_TMP = tempfile.mkdtemp()
+
+
+@override_settings(MEDIA_ROOT=MEDIA_TMP)
+class BookCoverTests(TestCase):
+    """Part 2: cover upload and its validators."""
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(MEDIA_TMP, ignore_errors=True)
+        super().tearDownClass()
+
+    def setUp(self):
+        self.category = Category.objects.create(name='Romance')
+        self.url = reverse('library:book-create')
+
+    def post(self, cover, **overrides):
+        data = {
+            'title': 'Iracema',
+            'publication_year': 1865,
+            'category': [self.category.pk],
+            'cover': cover,
+        }
+        data.update(overrides)
+        return self.client.post(self.url, data)
+
+    def test_form_uses_multipart_enctype(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'enctype="multipart/form-data"')
+
+    def test_upload_saves_file_and_shows_it_on_list_and_detail(self):
+        response = self.post(make_image())
+        book = Book.objects.get()
+        self.assertRedirects(response, book.get_absolute_url())
+
+        self.assertTrue(book.cover.name.startswith('capas/'))
+        self.assertTrue(os.path.exists(book.cover.path))
+        self.assertContains(self.client.get(book.get_absolute_url()), book.cover.url)
+        self.assertContains(self.client.get(reverse('library:book-list')), book.cover.url)
+
+    def test_jpeg_is_accepted(self):
+        self.post(make_image('capa.jpg', fmt='JPEG'))
+        self.assertTrue(Book.objects.get().cover)
+
+    def test_file_bigger_than_1mb_is_rejected(self):
+        big = make_image(size=(800, 800), noise=True)
+        self.assertGreater(big.size, 1024 * 1024)
+
+        response = self.post(big)
+        self.assertIn('máximo permitido é 1 MB', str(response.context['form'].errors['cover']))
+        self.assertFalse(Book.objects.exists())
+
+    def test_other_image_extension_is_rejected(self):
+        response = self.post(make_image('capa.gif', fmt='GIF'))
+        self.assertIn('JPG, JPEG ou PNG', str(response.context['form'].errors['cover']))
+        self.assertFalse(Book.objects.exists())
+
+    def test_text_file_renamed_to_png_is_rejected(self):
+        fake = SimpleUploadedFile('capa.png', b'not really an image', content_type='image/png')
+        response = self.post(fake)
+        self.assertTrue(response.context['form'].errors.get('cover'))
+        self.assertFalse(Book.objects.exists())
+
+    def test_cover_is_optional_and_edit_keeps_it(self):
+        self.post(make_image())
+        book = Book.objects.get()
+        old_name = book.cover.name
+
+        self.client.post(reverse('library:book-update', kwargs={'slug': book.slug}), {
+            'title': 'Iracema',
+            'publication_year': 1865,
+            'category': [self.category.pk],
+        })
+        book.refresh_from_db()
+        self.assertEqual(book.cover.name, old_name)

@@ -1,4 +1,5 @@
 from django.core.validators import (
+    FileExtensionValidator,
     MaxValueValidator,
     MinLengthValidator,
     MinValueValidator,
@@ -8,7 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
-from .validators import ano_atual
+from .validators import ano_atual, validar_tamanho_arquivo
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -57,6 +58,19 @@ class Book(models.Model):
         ],
     )
     is_available = models.BooleanField(default=True)
+    # The database stores only the path (e.g. "capas/dom-casmurro.jpg");
+    # the file itself lives in MEDIA_ROOT.
+    cover = models.ImageField(
+        upload_to='capas/',
+        blank=True,
+        validators=[
+            validar_tamanho_arquivo,
+            FileExtensionValidator(
+                allowed_extensions=['jpg', 'jpeg', 'png'],
+                message='Envie uma imagem JPG, JPEG ou PNG.',
+            ),
+        ],
+    )
     category = models.ManyToManyField('Category', related_name='books')
     slug = models.SlugField(max_length=140, unique=True, blank=True, null=True)
 
