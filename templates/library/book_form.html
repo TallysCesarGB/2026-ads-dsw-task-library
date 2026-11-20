@@ -49,6 +49,24 @@
                 {% endfor %}
             </div>
 
+            <div class="form-field form-field-narrow{% if form.pages.errors %} has-error{% endif %}">
+                {{ form.pages.label_tag }}
+                {{ form.pages }}
+                {% for error in form.pages.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Opcional. De 1 a 5000.</p>
+            </div>
+
+            <div class="form-field{% if form.isbn.errors %} has-error{% endif %}">
+                {{ form.isbn.label_tag }}
+                {{ form.isbn }}
+                {% for error in form.isbn.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Opcional. Exatamente 13 dígitos, sem traços.</p>
+            </div>
+
             {% include "library/_combo_field.html" with field=form.authors new_names=form.new_author_names new_field="new_authors" add_label="autor" empty_text="Nenhum autor cadastrado. Digite um nome para adicionar." hint="Digite para buscar. Se o autor não existir, adicione-o na hora." %}
 
             {% include "library/_combo_field.html" with field=form.category new_names=form.new_category_names new_field="new_categories" add_label="categoria" empty_text="Nenhuma categoria cadastrada. Digite um nome para adicionar." hint="Digite para buscar. Se a categoria não existir, adicione-a na hora." %}

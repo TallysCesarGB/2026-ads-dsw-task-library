@@ -1,4 +1,3 @@
-from datetime import date
 from functools import cached_property
 
 from django import forms
@@ -58,10 +57,15 @@ class BookForm(forms.ModelForm):
 
     class Meta:
         model = Book
-        fields = ['title', 'publication_year', 'authors', 'category', 'is_available']
+        fields = [
+            'title', 'publication_year', 'pages', 'isbn',
+            'authors', 'category', 'is_available',
+        ]
         labels = {
             'title': 'Título',
             'publication_year': 'Ano de publicação',
+            'pages': 'Páginas',
+            'isbn': 'ISBN',
             'authors': 'Autores',
             'category': 'Categorias',
             'is_available': 'Disponível para empréstimo',
@@ -76,6 +80,10 @@ class BookForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Ex.: Dom Casmurro'}),
             'publication_year': forms.NumberInput(attrs={'placeholder': 'Ex.: 1899'}),
+            'pages': forms.NumberInput(attrs={'placeholder': 'Ex.: 256'}),
+            'isbn': forms.TextInput(
+                attrs={'placeholder': 'Ex.: 9788535910663', 'inputmode': 'numeric'}
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -99,15 +107,6 @@ class BookForm(forms.ModelForm):
         return self._posted_names('new_categories') if self.is_bound else []
 
     # ---- validation --------------------------------------------------------
-
-    def clean_publication_year(self):
-        year = self.cleaned_data['publication_year']
-        current_year = date.today().year
-        if year < 1 or year > current_year:
-            raise forms.ValidationError(
-                f'Informe um ano entre 1 e {current_year}.'
-            )
-        return year
 
     def clean(self):
         cleaned_data = super().clean()
