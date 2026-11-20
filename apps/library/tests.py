@@ -277,16 +277,18 @@ class BookValidatorTests(TestCase):
             {'title', 'publication_year', 'pages', 'isbn'},
         )
     
-    def make_image(name='capa.png', fmt='PNG', size=(60, 90), noise=False):
-        """Build an in-memory image upload. With noise=True the PNG is large (> 1 MB)."""
-        if noise:
-            image = Image.frombytes('RGB', size, os.urandom(size[0] * size[1] * 3))
-        else:
-            image = Image.new('RGB', size, (156, 122, 60))
-        buffer = io.BytesIO()
-        image.save(buffer, fmt)
-        content_type = 'image/png' if fmt == 'PNG' else f'image/{fmt.lower()}'
-        return SimpleUploadedFile(name, buffer.getvalue(), content_type=content_type)
+
+
+def make_image(name='capa.png', fmt='PNG', size=(60, 90), noise=False):
+    """Build an in-memory image upload. With noise=True the PNG is large (> 1 MB)."""
+    if noise:
+        image = Image.frombytes('RGB', size, os.urandom(size[0] * size[1] * 3))
+    else:
+        image = Image.new('RGB', size, (156, 122, 60))
+    buffer = io.BytesIO()
+    image.save(buffer, fmt)
+    content_type = 'image/png' if fmt == 'PNG' else f'image/{fmt.lower()}'
+    return SimpleUploadedFile(name, buffer.getvalue(), content_type=content_type)
 
 
 MEDIA_TMP = tempfile.mkdtemp()
