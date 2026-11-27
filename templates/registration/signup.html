@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Criar conta &mdash; Mini Biblioteca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'library/css/book-list.css' %}">
+</head>
+<body>
+    <main>
+        <div class="masthead">
+            <p><a href="{% url 'library:book-list' %}">&larr; Voltar ao catálogo</a></p>
+            <h1>Criar conta</h1>
+        </div>
+
+        <form method="post" class="form" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-alert" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-field{% if form.username.errors %} has-error{% endif %}">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Até 150 caracteres. Letras, números e @/./+/-/_ apenas.</p>
+            </div>
+
+            <div class="form-field{% if form.password1.errors %} has-error{% endif %}">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% for error in form.password1.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">No mínimo 8 caracteres, não pode ser só números nem uma senha comum.</p>
+            </div>
+
+            <div class="form-field{% if form.password2.errors %} has-error{% endif %}">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="hint">Digite a mesma senha para confirmar.</p>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">Criar conta</button>
+                <a href="{% url 'login' %}" class="btn btn-outline">Já tenho conta</a>
+            </div>
+        </form>
+
+        <footer>Mini Biblioteca &mdash; Desenvolvimento de Sistemas Web</footer>
+    </main>
+</body>
+</html>
